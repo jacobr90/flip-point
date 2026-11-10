@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flip Point</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,700&family=Barlow:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">Flip<span>Point</span></div>
+    <span class="status" id="status"><i></i><span id="statusText">Demo mode</span></span>
+    <div class="top-actions">
+      <button id="listenBtn" class="go">Connect TechDisc</button>
+      <button id="throwBtn" class="plain">Demo throw</button>
+      <button id="settingsBtn" class="text-btn">Settings</button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <!-- ============ LIVE STAGE ============ -->
+    <section class="card stage" aria-label="Live throw">
+      <div class="stage-head">
+        <label class="disc-pick">
+          <small>Disc in hand</small>
+          <select id="discSel"></select>
+        </label>
+        <div class="disc-meta" id="discMeta"></div>
+      </div>
+
+      <div class="goal-row">
+        <span class="kicker">Goal</span>
+        <div class="goal" role="group" aria-label="What this disc should do">
+          <button data-goal="any">Free throw</button>
+          <button data-goal="hyzer">Hold hyzer</button>
+          <button data-goal="flat">Flip to flat</button>
+          <button data-goal="flip">Flip over</button>
+        </div>
+        <div class="streak" id="streak" title="Throws in a row that hit the goal"></div>
+      </div>
+
+      <div class="gauge-wrap">
+        <svg id="gauge" viewBox="0 0 400 228" aria-label="Flip meter: arm speed against this disc's flip points"></svg>
+        <div class="readout"><b id="speed">--</b><small>mph</small></div>
+        <div class="burst" id="burst" aria-hidden="true"></div>
+      </div>
+      <div class="target-note" id="targetNote"></div>
+
+      <div class="verdict" id="verdict" aria-live="polite"></div>
+
+      <div class="duo">
+        <figure>
+          <svg id="behind" viewBox="0 0 200 104" aria-label="The disc seen from behind you"></svg>
+          <figcaption>Seen from behind you · <b id="tiltNow">-</b></figcaption>
+        </figure>
+        <figure>
+          <svg id="tiltChart" viewBox="0 0 240 104" aria-label="Disc tilt through the flight"></svg>
+          <figcaption>Tilt through the flight</figcaption>
+        </figure>
+      </div>
+
+      <div class="release" id="release"></div>
+    </section>
+
+    <!-- ============ BAG ============ -->
+    <section class="card bag" aria-label="Bag flip chart">
+      <div class="bag-head">
+        <h2>Bag flip chart</h2>
+        <div class="bag-actions">
+          <button id="mapBagBtn" class="plain small">Map whole bag</button>
+          <button id="stopMapBtn" class="text-btn small hidden">Stop</button>
+        </div>
+      </div>
+      <label class="ref">
+        <span>Reference release <b id="refOut">15° hyzer</b></span>
+        <input type="range" id="refHyzer" min="0" max="30" step="5" value="15">
+      </label>
+      <div class="legend">
+        <span class="sw hyzer"></span>Holds hyzer
+        <span class="sw flat"></span>Flips to flat
+        <span class="sw flip"></span>Flips over
+        <span class="sw you"></span>Your speed
+      </div>
+      <div class="bag-chart" id="bagChart"></div>
+      <p class="insight" id="insight"></p>
+      <p class="fine" id="budget"></p>
+    </section>
+
+    <!-- ============ LOG ============ -->
+    <section class="card log" aria-label="Recent throws">
+      <div class="bag-head">
+        <h2>Recent throws</h2>
+        <button id="clearLogBtn" class="text-btn small">Clear</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Time</th><th>Disc</th><th class="num">Speed</th><th class="num">Hyzer</th><th>Chart said</th><th>Flight did</th><th>Goal</th></tr></thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="settings">
+    <form method="dialog" class="settings">
+      <h2>Settings</h2>
+      <label>TechDisc play token
+        <input type="password" id="token" placeholder="Paste token (without 'Bearer')" autocomplete="off">
+      </label>
+      <div class="row">
+        <button type="button" id="connectBtn" class="go">Connect</button>
+        <button type="button" id="forgetBtn" class="plain">Use demo instead</button>
+      </div>
+      <label>Throw style
+        <select id="styleSel">
+          <option value="RHBH">Right-hand backhand</option>
+          <option value="RHFH">Right-hand forehand</option>
+          <option value="LHBH">Left-hand backhand</option>
+          <option value="LHFH">Left-hand forehand</option>
+        </select>
+      </label>
+      <p class="note" id="calibNote"></p>
+      <p class="note">Flip points come from the TechDisc simulator: each disc is thrown at 20 to 85 mph from the reference release, and the chart marks where it stops holding hyzer and where it turns over. Mapping one disc takes about 9 sims (about 11 seconds). Results are saved on this device.</p>
+      <div class="row">
+        <button type="button" id="clearCacheBtn" class="plain danger">Forget flip points</button>
+      </div>
+      <div class="row end"><button class="go">Done</button></div>
+    </form>
+  </dialog>
+
+  <script src="js/api.js"></script>
+  <script src="js/tilt.js"></script>
+  <script src="js/flip.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
