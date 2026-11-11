@@ -32,20 +32,17 @@
       </div>
 
       <div class="goal-row">
-        <span class="kicker">Goal</span>
-        <div class="goal" role="group" aria-label="What this disc should do">
-          <button data-goal="any">Free throw</button>
+        <span class="kicker">Train for</span>
+        <div class="goal" role="group" aria-label="The flight you are practicing with this disc">
           <button data-goal="hyzer">Hold hyzer</button>
           <button data-goal="flat">Flip to flat</button>
           <button data-goal="flip">Flip over</button>
         </div>
-        <div class="streak" id="streak" title="Throws in a row that hit the goal"></div>
       </div>
 
       <div class="gauge-wrap">
         <svg id="gauge" viewBox="0 0 400 228" aria-label="Flip meter: arm speed against this disc's flip points"></svg>
         <div class="readout"><b id="speed">--</b><small>mph</small></div>
-        <div class="burst" id="burst" aria-hidden="true"></div>
       </div>
       <div class="target-note" id="targetNote"></div>
 
@@ -74,19 +71,94 @@
           <button id="stopMapBtn" class="text-btn small hidden">Stop</button>
         </div>
       </div>
-      <label class="ref">
-        <span>Reference release <b id="refOut">15° hyzer</b></span>
-        <input type="range" id="refHyzer" min="0" max="30" step="5" value="15">
-      </label>
+      <div class="progress hidden" id="bagProgress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Bag mapping progress">
+        <div class="ptrack"><span id="bagProgFill"></span></div>
+        <div class="ptext" id="bagProgText"></div>
+      </div>
+      <div class="ref">
+        <div class="ref-head">Chart release: <b id="refOut">15° hyzer, nose 2° up</b></div>
+        <div class="ref-row">
+          <label for="refHyzer" class="ref-k">Hyzer</label>
+          <button type="button" class="nudge" data-ref="hyzer:-1" aria-label="1 degree less hyzer">−</button>
+          <input type="range" id="refHyzer" min="-10" max="30" step="1" value="15">
+          <button type="button" class="nudge" data-ref="hyzer:1" aria-label="1 degree more hyzer">+</button>
+          <b class="ref-v" id="refHyzerOut"></b>
+        </div>
+        <div class="ref-row">
+          <label for="refNose" class="ref-k">Nose</label>
+          <button type="button" class="nudge" data-ref="nose:-1" aria-label="Nose 1 degree lower">−</button>
+          <input type="range" id="refNose" min="-5" max="8" step="1" value="2">
+          <button type="button" class="nudge" data-ref="nose:1" aria-label="Nose 1 degree higher">+</button>
+          <b class="ref-v" id="refNoseOut"></b>
+        </div>
+        <div class="ref-avg" id="refAvg"></div>
+        <span class="fine" id="refHint"></span>
+      </div>
       <div class="legend">
         <span class="sw hyzer"></span>Holds hyzer
         <span class="sw flat"></span>Flips to flat
         <span class="sw flip"></span>Flips over
         <span class="sw you"></span>Your speed
+        <span class="sw max"></span>Max carry
       </div>
       <div class="bag-chart" id="bagChart"></div>
       <p class="insight" id="insight"></p>
       <p class="fine" id="budget"></p>
+    </section>
+
+    <!-- ============ WHAT IF ============ -->
+    <section class="card whatif" aria-label="What if explorer">
+      <div class="bag-head">
+        <h2>What if…</h2>
+        <button id="wiReset" class="text-btn small">Back to my throw</button>
+      </div>
+      <p class="wi-base" id="wiBase"></p>
+      <div class="wi-grid">
+        <div class="wi-left">
+          <div class="wi-slider">
+            <div class="wi-label"><span>Speed</span><b id="wiSpeedOut"></b><span class="delta" id="wiSpeedD"></span></div>
+            <div class="wi-input">
+              <button type="button" class="nudge" data-nudge="wiSpeed:-1" aria-label="1 mph slower">−</button>
+              <input type="range" id="wiSpeed" min="20" max="85" step="1">
+              <button type="button" class="nudge" data-nudge="wiSpeed:1" aria-label="1 mph faster">+</button>
+            </div>
+          </div>
+          <div class="wi-slider">
+            <div class="wi-label"><span>Hyzer angle</span><b id="wiHyzerOut"></b><span class="delta" id="wiHyzerD"></span></div>
+            <div class="wi-input">
+              <button type="button" class="nudge" data-nudge="wiHyzer:-1" aria-label="1 degree less hyzer">−</button>
+              <input type="range" id="wiHyzer" min="-30" max="40" step="1">
+              <button type="button" class="nudge" data-nudge="wiHyzer:1" aria-label="1 degree more hyzer">+</button>
+            </div>
+            <div class="wi-ends"><span>anhyzer</span><span>flat</span><span>hyzer</span></div>
+          </div>
+          <div class="wi-slider">
+            <div class="wi-label"><span>Nose angle</span><b id="wiNoseOut"></b><span class="delta" id="wiNoseD"></span></div>
+            <div class="wi-input">
+              <button type="button" class="nudge" data-nudge="wiNose:-0.5" aria-label="Nose half a degree lower">−</button>
+              <input type="range" id="wiNose" min="-10" max="10" step="0.5">
+              <button type="button" class="nudge" data-nudge="wiNose:0.5" aria-label="Nose half a degree higher">+</button>
+            </div>
+            <div class="wi-ends"><span>nose down</span><span>level</span><span>nose up</span></div>
+          </div>
+          <div class="wi-go">
+            <button id="wiFly" class="go">Run test flight</button>
+            <span id="wiCost" class="fine"></span>
+            <span id="wiError" class="wi-error"></span>
+          </div>
+          <div class="wi-result" id="wiResult" aria-live="polite"></div>
+        </div>
+        <div class="wi-views">
+          <figure>
+            <svg id="wiPath" viewBox="0 0 220 300" aria-label="Both flights seen from above"></svg>
+            <figcaption><span class="key base"></span>Your throw <span class="key if"></span>What if</figcaption>
+          </figure>
+          <figure>
+            <svg id="wiTilt" viewBox="0 0 240 120" aria-label="Disc tilt through both flights"></svg>
+            <figcaption>Tilt through the flight</figcaption>
+          </figure>
+        </div>
+      </div>
     </section>
 
     <!-- ============ LOG ============ -->
@@ -97,7 +169,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Time</th><th>Disc</th><th class="num">Speed</th><th class="num">Hyzer</th><th>Chart said</th><th>Flight did</th><th>Goal</th></tr></thead>
+          <thead><tr><th>Time</th><th>Disc</th><th class="num">Speed</th><th class="num">Hyzer</th><th class="num">Carry</th><th>Chart said</th><th>Flight did</th><th>Training for</th></tr></thead>
           <tbody id="logBody"></tbody>
         </table>
       </div>
@@ -123,7 +195,7 @@
         </select>
       </label>
       <p class="note" id="calibNote"></p>
-      <p class="note">Flip points come from the TechDisc simulator: each disc is thrown at 20 to 85 mph from the reference release, and the chart marks where it stops holding hyzer and where it turns over. Mapping one disc takes about 9 sims (about 11 seconds). Results are saved on this device.</p>
+      <p class="note">Flip points come from the TechDisc simulator: each disc is thrown at 20 to 85 mph from the reference release, and the chart marks where it stops holding hyzer and where it turns over. Mapping one disc takes at most 6 API calls (about 7 seconds) and only runs when you press a Map button. Results are saved on this device for each release angle.</p>
       <div class="row">
         <button type="button" id="clearCacheBtn" class="plain danger">Forget flip points</button>
       </div>
@@ -134,6 +206,7 @@
   <script src="js/api.js"></script>
   <script src="js/tilt.js"></script>
   <script src="js/flip.js"></script>
+  <script src="js/whatif.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
